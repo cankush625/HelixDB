@@ -2,10 +2,9 @@ package resp
 
 import (
 	"fmt"
-	"net"
 )
 
-func ParseCommand(command []byte, conn net.Conn) []byte {
+func ParseCommand(command []byte) []byte {
 	if command != nil {
 		fmt.Printf("parse command: %s", command)
 		return command

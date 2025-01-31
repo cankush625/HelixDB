@@ -7,7 +7,7 @@ import (
 )
 
 func PerformRequest(buffer []byte, conn net.Conn) {
-	ParseCommand(buffer, conn)
+	ParseCommand(buffer)
 	reply, err := exc.ExecuteCommand(buffer)
 	if err != nil {
 		err := fmt.Errorf("error executing the command")
