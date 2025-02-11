@@ -1,7 +1,18 @@
 package exc
 
-import "HelixDB/cmd"
+import (
+	"HelixDB/cmd"
+	"HelixDB/common"
+	"fmt"
+	"strings"
+)
 
-func ExecuteCommand(command []byte) ([]byte, error) {
-	return cmd.Ping(command)
+func ExecuteCommand(command map[string]string) ([]byte, error) {
+	switch strings.ToUpper(command["command"]) {
+	case common.Ping:
+		return cmd.Ping(command["value"])
+	case common.Command:
+		return cmd.Command(command["value"])
+	}
+	return []byte("-unsupported command\r\n"), fmt.Errorf("unsupported command")
 }

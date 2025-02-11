@@ -1,7 +1,6 @@
 package resp
 
 import (
-	"fmt"
 	"net"
 )
 
@@ -11,13 +10,13 @@ func HandleConn(conn net.Conn) {
 	for {
 		n, err := conn.Read(buffer)
 		if err != nil {
+			conn.Write([]byte("-Error processing\r\n"))
 			return
 		}
-		buffer = buffer[:n]
-		fmt.Printf("buffer: %s", buffer)
 		if n == 0 {
+			conn.Write([]byte("-Error processing\r\n"))
 			return
 		}
-		PerformRequest(buffer, conn)
+		PerformRequest(buffer[:n], conn)
 	}
 }
