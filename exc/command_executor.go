@@ -13,6 +13,8 @@ func ExecuteCommand(command map[string]string) ([]byte, error) {
 		return cmd.Ping(command["value"])
 	case common.Command:
 		return cmd.Command(command["value"])
+	case common.Echo:
+		return cmd.Echo(command["value"])
 	}
 	return []byte("-unsupported command\r\n"), fmt.Errorf("unsupported command")
 }
