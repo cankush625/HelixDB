@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func ParseCommand(command []byte) (map[string]string, error) {
+func ParseCommand(command []byte) ([]string, error) {
 	if command == nil {
 		return nil, nil
 	}
@@ -32,19 +32,11 @@ func isValidCommand(command []byte) bool {
 	return true
 }
 
-func parseArray(data []string) (map[string]string, error) {
-	var command string
-	var value string
-	for i, datum := range data {
-		if i == 2 {
-			command = datum
-		}
-		if i == 4 {
-			value = datum
-		}
+func parseArray(data []string) ([]string, error) {
+	var value []string
+	for i := 2; i < len(data); i += 2 {
+		value = append(value, data[i])
 	}
-	return map[string]string{
-		"command": command,
-		"value":   value,
-	}, nil
+	fmt.Println(value)
+	return value, nil
 }
