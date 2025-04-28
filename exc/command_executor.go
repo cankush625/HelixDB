@@ -7,14 +7,18 @@ import (
 	"strings"
 )
 
-func ExecuteCommand(command map[string]string) ([]byte, error) {
-	switch strings.ToUpper(command["command"]) {
+func ExecuteCommand(command []string) ([]byte, error) {
+	switch strings.ToUpper(command[0]) {
 	case common.Ping:
-		return cmd.Ping(command["value"])
+		return cmd.Ping(command)
 	case common.Command:
-		return cmd.Command(command["value"])
+		return cmd.Command(command)
 	case common.Echo:
-		return cmd.Echo(command["value"])
+		return cmd.Echo(command)
+	case common.Get:
+		return cmd.Get(command)
+	case common.Set:
+		return cmd.Set(command)
 	}
 	return []byte("-unsupported command\r\n"), fmt.Errorf("unsupported command")
 }

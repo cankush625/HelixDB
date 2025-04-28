@@ -9,14 +9,14 @@ import (
 // no any message or input is passed to this command.
 // If any message is passed to this command then it returns
 // that message as output.
-func Ping(message string) ([]byte, error) {
+func Ping(command []string) ([]byte, error) {
 	var buffer bytes.Buffer
 	buffer.WriteString("+")
-	if message != "" {
-		buffer.WriteString(message)
-	} else {
-		buffer.WriteString("PONG")
+	message := "PONG"
+	if len(command) > 1 {
+		message = command[1]
 	}
+	buffer.WriteString(message)
 	buffer.WriteString(common.Terminator)
 	return []byte(buffer.String()), nil
 }
