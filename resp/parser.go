@@ -2,10 +2,18 @@ package resp
 
 import (
 	"HelixDB/common"
+	"errors"
 	"fmt"
 	"strings"
 )
 
+var UnsupportedCommandError = errors.New("unsupported command")
+
+// ParseCommand parses the command and returns it as a slice of string.
+// ParseCommand parses the commands of type Array.
+//
+// Note:
+// Simple String cannot be accepted as a command and is only for command replies.
 func ParseCommand(command []byte) ([]string, error) {
 	if command == nil {
 		return nil, nil
@@ -16,7 +24,7 @@ func ParseCommand(command []byte) ([]string, error) {
 	firstByte := string(command[0])
 	dataType, ok := DataTypes[firstByte]
 	if !ok {
-		return nil, fmt.Errorf("unsupported command")
+		return nil, UnsupportedCommandError
 	}
 	data := strings.Split(string(command), common.Terminator)
 	if dataType == Array {
@@ -37,6 +45,5 @@ func parseArray(data []string) ([]string, error) {
 	for i := 2; i < len(data); i += 2 {
 		value = append(value, data[i])
 	}
-	fmt.Println(value)
 	return value, nil
 }
