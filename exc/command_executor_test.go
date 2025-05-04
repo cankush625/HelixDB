@@ -3,6 +3,7 @@ package exc
 import (
 	"HelixDB/cmd"
 	"errors"
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -42,4 +43,29 @@ func TestExecuteCommand(t *testing.T) {
 			t.Errorf("ExecuteCommand(%v) = %v, %v", test.command, got, gotErr)
 		}
 	}
+}
+
+// BenchmarkExecuteCommand benchmarks the ExecuteCommand function
+// against huge number of executions
+func BenchmarkExecuteCommand(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_, err := ExecuteCommand([]string{"PING"})
+		if err != nil {
+			continue
+		}
+	}
+}
+
+// ExampleExecuteCommand is an example function. It serves as a
+// documentation function.
+func ExampleExecuteCommand() {
+	fmt.Println(ExecuteCommand([]string{"PING"}))
+	fmt.Println(ExecuteCommand([]string{"ECHO", "hello"}))
+	fmt.Println(ExecuteCommand([]string{"SET", "tenant", "ACME"}))
+	fmt.Println(ExecuteCommand([]string{"GET", "tenant"}))
+	// Output:
+	// [43 80 79 78 71 13 10] <nil>
+	// [43 104 101 108 108 111 13 10] <nil>
+	// [43 79 75 13 10] <nil>
+	// [43 65 67 77 69 13 10] <nil>
 }
