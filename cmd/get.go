@@ -7,9 +7,11 @@ import (
 	"fmt"
 )
 
+var WrongNumberOfArgumentsError = fmt.Errorf("wrong number of arguments")
+
 func Get(command []string) ([]byte, error) {
 	if len(command) != 2 {
-		return common.RespError("missing key"), fmt.Errorf("missing key")
+		return common.RespError("wrong number of arguments"), WrongNumberOfArgumentsError
 	}
 	var buffer bytes.Buffer
 	value, err := GetValueFromMemory(command[1])

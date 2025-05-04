@@ -4,12 +4,18 @@ import (
 	"HelixDB/common"
 	"HelixDB/db"
 	"bytes"
-	"fmt"
+	"errors"
 )
 
+var MissingArgumentsError = errors.New("missing arguments")
+var SyntaxError = errors.New("syntax error")
+
 func Set(command []string) ([]byte, error) {
-	if len(command) != 3 {
-		return common.RespError("missing arguments"), fmt.Errorf("missing arguments")
+	if len(command) < 3 {
+		return common.RespError("missing arguments"), MissingArgumentsError
+	}
+	if len(command) > 3 {
+		return common.RespError("syntax error"), SyntaxError
 	}
 	var buffer bytes.Buffer
 	_, err := SetValueFromMemory(command[1], command[2])

@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var UnsupportedCommandError = errors.New("unsupported command")
+var UnsupportedCommandDataTypeError = errors.New("unsupported command datatype")
 
 // ParseCommand parses the command and returns it as a slice of string.
 // ParseCommand parses the commands of type Array.
@@ -24,7 +24,7 @@ func ParseCommand(command []byte) ([]string, error) {
 	firstByte := string(command[0])
 	dataType, ok := DataTypes[firstByte]
 	if !ok {
-		return nil, UnsupportedCommandError
+		return nil, UnsupportedCommandDataTypeError
 	}
 	data := strings.Split(string(command), common.Terminator)
 	if dataType == Array {

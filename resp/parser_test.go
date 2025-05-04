@@ -21,14 +21,15 @@ func TestParseCommand(t *testing.T) {
 		{[]byte("*1\r\n$4\r\nPING\r\n"), []string{"PING"}, nil},
 		{[]byte("*1\r\n$4\r\nECHO\r\n"), []string{"ECHO"}, nil},
 		{[]byte("*1\r\n$4\r\nECHO\r\n$2\r\nhi\r\n"), []string{"ECHO", "hi"}, nil},
+		// Array type command with multiple args
+		{[]byte("*1\r\n$3\r\nSET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n"), []string{"SET", "key", "value"}, nil},
 		// Invalid commands
 		{nil, nil, nil},
 		// Unsupported datatype
-		{[]byte("%1\r\n$4\r\nECHO\r\n$2\r\nhi\r\n"), nil, UnsupportedCommandError},
+		{[]byte("%1\r\n$4\r\nECHO\r\n$2\r\nhi\r\n"), nil, UnsupportedCommandDataTypeError},
 	}
 	for _, test := range tests {
 		if got, gotErr := ParseCommand(test.command); !reflect.DeepEqual(got, test.want) || !errors.Is(gotErr, test.wantErr) {
-			fmt.Println(reflect.TypeOf(gotErr))
 			t.Errorf("ParseCommand(%v) = %v, %v", test.command, got, gotErr)
 		}
 	}
