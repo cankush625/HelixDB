@@ -9,7 +9,7 @@ import (
 )
 
 // TestExecuteCommand tests the ExecuteCommand function for
-// all possible valid inputs
+// all possible valid and invalid inputs
 func TestExecuteCommand(t *testing.T) {
 	tests := []struct {
 		command []string
@@ -37,6 +37,7 @@ func TestExecuteCommand(t *testing.T) {
 		{[]string{"GET"}, []byte("-wrong number of arguments\r\n"), cmd.WrongNumberOfArgumentsError},
 		{[]string{"GET", "tenant", "random_arg"}, []byte("-wrong number of arguments\r\n"), cmd.WrongNumberOfArgumentsError},
 		// Unsupported/Invalid command
+		{[]string{"UNSUPPORTED"}, []byte("-unsupported command\r\n"), UnsupportedCommand},
 	}
 	for _, test := range tests {
 		if got, gotErr := ExecuteCommand(test.command); !reflect.DeepEqual(got, test.want) || !errors.Is(gotErr, test.wantErr) {
