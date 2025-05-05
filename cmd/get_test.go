@@ -18,7 +18,7 @@ func TestGet(t *testing.T) {
 		wantErr error
 	}{
 		// Key exists in the cache
-		{[]string{"GET", "tenant"}, []byte("+ACMEs\r\n"), nil},
+		{[]string{"GET", "tenant"}, []byte("+ACME\r\n"), nil},
 		// Key doesn't exist in the cache
 		{[]string{"GET", "org"}, []byte("$-1\r\n"), nil},
 		// Wrong number of arguments to the GET command
