@@ -8,7 +8,7 @@ import (
 )
 
 // TestParseCommand tests the ParseCommand function for
-// all possible valid inputs
+// all possible valid and invalid inputs
 func TestParseCommand(t *testing.T) {
 	tests := []struct {
 		command []byte
