@@ -3,6 +3,10 @@
 ---
 ### Helix is an in-memory data store that acts as a cache.
 
+<p align="center">
+    <img src="./assets/logo.png" width="150">
+</p>
+
 ## Installation
 
 ## Supported Commands
