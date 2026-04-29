@@ -5,6 +5,7 @@ import (
 	"HelixDB/db"
 	"bytes"
 	"fmt"
+	"time"
 )
 
 var WrongNumberOfArgumentsError = fmt.Errorf("wrong number of arguments")
@@ -25,6 +26,16 @@ func Get(command []string) ([]byte, error) {
 }
 
 func GetValueFromMemory(key string) (string, error) {
+	// Check if the key is expired
+	expirationTime, ok := db.KeyTTL.Load(key)
+	if !ok {
+		return "", fmt.Errorf("key not found")
+	}
+	currentTime := time.Now().UnixMilli()
+	if expirationTime != nil && expirationTime.(int64) < currentTime {
+		return "", fmt.Errorf("key expired")
+	}
+
 	data, ok := db.DB.Load(key)
 	if !ok {
 		return "", fmt.Errorf("key not found")

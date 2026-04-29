@@ -22,7 +22,7 @@ func ParseCommand(command []byte) ([]string, error) {
 		return nil, fmt.Errorf("invalid command")
 	}
 	firstByte := string(command[0])
-	dataType, ok := DataTypes[firstByte]
+	dataType, ok := DataTypeToFirstByteMap[firstByte]
 	if !ok {
 		return nil, UnsupportedCommandDataTypeError
 	}
