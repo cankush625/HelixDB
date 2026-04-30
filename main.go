@@ -1,6 +1,7 @@
 package main
 
 import (
+	"HelixDB/db"
 	"HelixDB/resp"
 	"fmt"
 	"net"
@@ -14,6 +15,7 @@ func main() {
 		os.Exit(1)
 	}
 	defer l.Close()
+	db.StartActiveExpiry()
 	for {
 		conn, err := l.Accept()
 		if err != nil {
