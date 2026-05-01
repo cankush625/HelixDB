@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"HelixDB/common"
 	"errors"
 	"reflect"
 	"testing"
@@ -8,23 +9,23 @@ import (
 
 func TestDel(t *testing.T) {
 	// Prepare: insert keys
-	_, _ = Set([]string{"SET", "key1", "value1"})
-	_, _ = Set([]string{"SET", "key2", "value2"})
-	_, _ = Set([]string{"SET", "key3", "value3"})
+	_, _ = Set(common.Cmd{Name: "SET", Args: []string{"key1", "value1"}})
+	_, _ = Set(common.Cmd{Name: "SET", Args: []string{"key2", "value2"}})
+	_, _ = Set(common.Cmd{Name: "SET", Args: []string{"key3", "value3"}})
 
 	tests := []struct {
-		command []string
+		command common.Cmd
 		want    []byte
 		wantErr error
 	}{
 		// Delete a single existing key — returns 1
-		{[]string{"DEL", "key1"}, []byte(":1\r\n"), nil},
+		{common.Cmd{Name: "DEL", Args: []string{"key1"}}, []byte(":1\r\n"), nil},
 		// Delete a key that does not exist — returns 0
-		{[]string{"DEL", "ghost"}, []byte(":0\r\n"), nil},
+		{common.Cmd{Name: "DEL", Args: []string{"ghost"}}, []byte(":0\r\n"), nil},
 		// Delete multiple keys — key2 exists, key3 exists, ghost does not
-		{[]string{"DEL", "key2", "key3", "ghost"}, []byte(":2\r\n"), nil},
+		{common.Cmd{Name: "DEL", Args: []string{"key2", "key3", "ghost"}}, []byte(":2\r\n"), nil},
 		// Wrong number of arguments
-		{[]string{"DEL"}, []byte("-wrong number of arguments\r\n"), WrongNumberOfArgumentsError},
+		{common.Cmd{Name: "DEL"}, []byte("-wrong number of arguments\r\n"), WrongNumberOfArgumentsError},
 	}
 	for _, test := range tests {
 		if got, gotErr := Del(test.command); !reflect.DeepEqual(got, test.want) || !errors.Is(gotErr, test.wantErr) {

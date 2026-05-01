@@ -1,6 +1,7 @@
 package resp
 
 import (
+	"HelixDB/common"
 	"errors"
 	"fmt"
 	"reflect"
@@ -12,30 +13,30 @@ import (
 func TestParseCommand(t *testing.T) {
 	tests := []struct {
 		command []byte
-		want    []string
+		want    common.Cmd
 		wantErr error
 	}{
-		// Simple String cannot be accepted as a command.
-		{[]byte("+OK\r\n"), nil, nil},
-		// Array type command
-		{[]byte("*1\r\n$4\r\nPING\r\n"), []string{"PING"}, nil},
-		{[]byte("*1\r\n$4\r\nECHO\r\n"), []string{"ECHO"}, nil},
-		{[]byte("*1\r\n$4\r\nECHO\r\n$2\r\nhi\r\n"), []string{"ECHO", "hi"}, nil},
+		// Simple String cannot be accepted as a command — returns zero-value Cmd
+		{[]byte("+OK\r\n"), common.Cmd{}, nil},
+		// Array type commands
+		{[]byte("*1\r\n$4\r\nPING\r\n"), common.Cmd{Name: "PING", Args: []string{}}, nil},
+		{[]byte("*1\r\n$4\r\nECHO\r\n"), common.Cmd{Name: "ECHO", Args: []string{}}, nil},
+		{[]byte("*1\r\n$4\r\nECHO\r\n$2\r\nhi\r\n"), common.Cmd{Name: "ECHO", Args: []string{"hi"}}, nil},
 		// Array type command with multiple args
-		{[]byte("*1\r\n$3\r\nSET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n"), []string{"SET", "key", "value"}, nil},
+		{[]byte("*1\r\n$3\r\nSET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n"), common.Cmd{Name: "SET", Args: []string{"key", "value"}}, nil},
 		// Invalid commands
-		{nil, nil, nil},
+		{nil, common.Cmd{}, nil},
 		// Unsupported datatype
-		{[]byte("%1\r\n$4\r\nECHO\r\n$2\r\nhi\r\n"), nil, UnsupportedCommandDataTypeError},
+		{[]byte("%1\r\n$4\r\nECHO\r\n$2\r\nhi\r\n"), common.Cmd{}, UnsupportedCommandDataTypeError},
 	}
 	for _, test := range tests {
 		if got, gotErr := ParseCommand(test.command); !reflect.DeepEqual(got, test.want) || !errors.Is(gotErr, test.wantErr) {
-			t.Errorf("ParseCommand(%v) = %v, %v", test.command, got, gotErr)
+			t.Errorf("ParseCommand(%v) = %v, %v; want %v, %v", test.command, got, gotErr, test.want, test.wantErr)
 		}
 	}
 }
 
-// BenchmarkGetDivision benchmarks the ParseCommand function
+// BenchmarkParseCommand benchmarks the ParseCommand function
 // against huge number of executions
 func BenchmarkParseCommand(b *testing.B) {
 	for i := 0; i < b.N; i++ {
@@ -46,12 +47,11 @@ func BenchmarkParseCommand(b *testing.B) {
 	}
 }
 
-// ExampleParseCommand is an example function. It serves as a
-// documentation function.
+// ExampleParseCommand is an example function. It serves as a documentation function.
 func ExampleParseCommand() {
 	fmt.Println(ParseCommand([]byte("*1\r\n$4\r\nPING\r\n")))
 	fmt.Println(ParseCommand([]byte("*1\r\n$4\r\nECHO\r\n$2\r\nhi\r\n")))
 	// Output:
-	// [PING] <nil>
-	// [ECHO hi] <nil>
+	// {PING []} <nil>
+	// {ECHO [hi]} <nil>
 }
