@@ -4,13 +4,12 @@ import (
 	"HelixDB/cmd"
 	"HelixDB/common"
 	"errors"
-	"strings"
 )
 
 var UnsupportedCommand = errors.New("unsupported command")
 
-func ExecuteCommand(command []string) ([]byte, error) {
-	switch strings.ToUpper(command[0]) {
+func ExecuteCommand(command common.Cmd) ([]byte, error) {
+	switch command.Name {
 	case common.Ping:
 		return cmd.Ping(command)
 	case common.Command:

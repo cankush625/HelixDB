@@ -9,41 +9,41 @@ import (
 
 var UnsupportedCommandDataTypeError = errors.New("unsupported command datatype")
 
-// ParseCommand parses the command and returns it as a slice of string.
-// ParseCommand parses the commands of type Array.
-//
-// Note:
-// Simple String cannot be accepted as a command and is only for command replies.
-func ParseCommand(command []byte) ([]string, error) {
+// ParseCommand parses the raw RESP bytes and returns a Cmd.
+// Only Array type commands are accepted; Simple Strings are for replies only.
+func ParseCommand(command []byte) (common.Cmd, error) {
 	if command == nil {
-		return nil, nil
+		return common.Cmd{}, nil
 	}
 	if !isValidCommand(command) {
-		return nil, fmt.Errorf("invalid command")
+		return common.Cmd{}, fmt.Errorf("invalid command")
 	}
 	firstByte := string(command[0])
 	dataType, ok := DataTypeToFirstByteMap[firstByte]
 	if !ok {
-		return nil, UnsupportedCommandDataTypeError
+		return common.Cmd{}, UnsupportedCommandDataTypeError
 	}
 	data := strings.Split(string(command), common.Terminator)
 	if dataType == Array {
 		return parseArray(data)
 	}
-	return nil, nil
+	return common.Cmd{}, nil
 }
 
 func isValidCommand(command []byte) bool {
-	if command == nil {
-		return false
-	}
-	return true
+	return command != nil
 }
 
-func parseArray(data []string) ([]string, error) {
-	var value []string
+func parseArray(data []string) (common.Cmd, error) {
+	var parts []string
 	for i := 2; i < len(data); i += 2 {
-		value = append(value, data[i])
+		parts = append(parts, data[i])
 	}
-	return value, nil
+	if len(parts) == 0 {
+		return common.Cmd{}, fmt.Errorf("empty command")
+	}
+	return common.Cmd{
+		Name: strings.ToUpper(parts[0]),
+		Args: parts[1:],
+	}, nil
 }

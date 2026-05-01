@@ -5,16 +5,14 @@ import (
 	"bytes"
 )
 
-// Ping is a command that returns a common response PONG when
-// no any message or input is passed to this command.
-// If any message is passed to this command then it returns
-// that message as output.
-func Ping(command []string) ([]byte, error) {
+// Ping returns PONG when no argument is provided,
+// or echoes back the first argument if one is given.
+func Ping(command common.Cmd) ([]byte, error) {
 	var buffer bytes.Buffer
 	buffer.WriteString("+")
 	message := "PONG"
-	if len(command) > 1 {
-		message = command[1]
+	if len(command.Args) > 0 {
+		message = command.Args[0]
 	}
 	buffer.WriteString(message)
 	buffer.WriteString(common.Terminator)

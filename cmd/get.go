@@ -10,12 +10,12 @@ import (
 
 var WrongNumberOfArgumentsError = fmt.Errorf("wrong number of arguments")
 
-func Get(command []string) ([]byte, error) {
-	if len(command) != 2 {
+func Get(command common.Cmd) ([]byte, error) {
+	if len(command.Args) != 1 {
 		return common.RespError("wrong number of arguments"), WrongNumberOfArgumentsError
 	}
 	var buffer bytes.Buffer
-	value, err := GetValueFromMemory(command[1])
+	value, err := GetValueFromMemory(command.Args[0])
 	if err != nil {
 		buffer.WriteString("$" + "-1")
 	} else {

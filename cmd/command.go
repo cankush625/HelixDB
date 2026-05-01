@@ -5,10 +5,10 @@ import (
 	"bytes"
 )
 
-func Command(command []string) ([]byte, error) {
+func Command(command common.Cmd) ([]byte, error) {
 	var buffer bytes.Buffer
 	buffer.WriteString("+")
-	if len(command) > 1 && command[1] == "DOCS" {
+	if len(command.Args) > 0 && command.Args[0] == "DOCS" {
 		buffer.WriteString("OK")
 	}
 	buffer.WriteString(common.Terminator)

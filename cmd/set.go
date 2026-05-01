@@ -17,23 +17,23 @@ var SupportedArgs = map[string]bool{
 	common.PX: true,
 }
 
-func Set(command []string) ([]byte, error) {
-	if len(command) < 3 {
+func Set(command common.Cmd) ([]byte, error) {
+	if len(command.Args) < 2 {
 		return common.RespError("missing arguments"), MissingArgumentsError
 	}
-	argsMap, err := parseSetArgs(command)
+	argsMap, err := parseSetArgs(command.Args)
 	if err != nil && errors.Is(err, SyntaxError) {
 		return common.RespError("syntax error"), SyntaxError
 	} else if err != nil {
 		return common.RespError("error"), err
 	}
-	err = processSetArgs(command[1], argsMap)
+	err = processSetArgs(command.Args[0], argsMap)
 	if err != nil && errors.Is(err, InvalidExpireTimeError) {
 		return common.RespError(InvalidExpireTimeError.Error()), InvalidExpireTimeError
 	} else if err != nil {
 		return common.RespError("error"), err
 	}
-	_, err = setValueInMemory(command[1], command[2])
+	_, err = setValueInMemory(command.Args[0], command.Args[1])
 	if err != nil {
 		return common.RespError("error"), err
 	}
@@ -43,14 +43,14 @@ func Set(command []string) ([]byte, error) {
 	return []byte(buffer.String()), nil
 }
 
-// parseSetArgs parses the optional arguments after SET key value and returns
+// parseSetArgs parses the optional arguments after key and value and returns
 // a map of argument name to its value.
 // EX and PX are mutually exclusive — providing both is a syntax error.
-func parseSetArgs(command []string) (map[string]any, error) {
-	if len(command) == 3 {
+func parseSetArgs(args []string) (map[string]any, error) {
+	if len(args) == 2 {
 		return nil, nil
 	}
-	extraArgs := command[3:]
+	extraArgs := args[2:]
 	// Options come in key-value pairs, so extra args must be even in count.
 	if len(extraArgs)%2 != 0 {
 		return nil, SyntaxError
