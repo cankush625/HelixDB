@@ -9,6 +9,7 @@ const Command = "COMMAND"
 const Echo = "ECHO"
 const Get = "GET"
 const Set = "SET"
+const Expire = "EXPIRE"
 
 // Command Args
 // Expiration Args
