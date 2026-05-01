@@ -21,6 +21,8 @@ func ExecuteCommand(command []string) ([]byte, error) {
 		return cmd.Get(command)
 	case common.Set:
 		return cmd.Set(command)
+	case common.Expire:
+		return cmd.Expire(command)
 	}
 	return []byte("-unsupported command\r\n"), UnsupportedCommand
 }
