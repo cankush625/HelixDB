@@ -3,7 +3,6 @@ package cmd
 import (
 	"HelixDB/common"
 	"HelixDB/db"
-	"bytes"
 	"errors"
 	"strconv"
 )
@@ -24,18 +23,10 @@ func Expire(command []string) ([]byte, error) {
 	key := command[1]
 	// Key must already exist in DB.
 	if _, ok := db.DB.Load(key); !ok {
-		return integerReply(0), nil
+		return common.RespInteger(0), nil
 	}
 	ttlInMs := common.SecondsToMilliseconds(seconds)
 	expirationTime := common.GetCurrentTimeInUnixMilli(ttlInMs)
 	db.KeyTTL.Store(key, expirationTime)
-	return integerReply(1), nil
-}
-
-func integerReply(n int) []byte {
-	var buffer bytes.Buffer
-	buffer.WriteString(":")
-	buffer.WriteString(strconv.Itoa(n))
-	buffer.WriteString(common.Terminator)
-	return buffer.Bytes()
+	return common.RespInteger(1), nil
 }
