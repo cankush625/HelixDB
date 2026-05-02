@@ -10,14 +10,14 @@ GET key
 
 ## Arguments
 
-| Argument | Type   | Required | Description            |
-|----------|--------|----------|------------------------|
-| `key`    | string | Yes      | The key to look up.    |
+| Argument | Type   | Required | Description         |
+|----------|--------|----------|---------------------|
+| `key`    | string | Yes      | The key to look up. |
 
 ## Return value
 
 - The value stored at `key`.
-- `(nil)` if the key does not exist or has expired.
+- nil if the key does not exist or has expired.
 
 ## Errors
 
@@ -26,12 +26,12 @@ GET key
 ## Examples
 
 ```
-> SET name "helix"
+> SET name helix
 OK
 
 > GET name
-"helix"
+helix
 
 > GET nonexistent
-(nil)
+nil
 ```

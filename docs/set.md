@@ -1,6 +1,6 @@
 # SET
 
-Sets `key` to hold a string `value`. If `key` already exists, its value is overwritten regardless of type.
+Sets `key` to hold a string value. If `key` already exists, its value is overwritten.
 
 ## Syntax
 
@@ -10,12 +10,12 @@ SET key value [EX seconds | PX milliseconds]
 
 ## Arguments
 
-| Argument         | Type    | Required | Description                                          |
-|------------------|---------|----------|------------------------------------------------------|
-| `key`            | string  | Yes      | The key to set.                                      |
-| `value`          | string  | Yes      | The value to store.                                  |
-| `EX seconds`     | integer | No       | Set expiry in seconds. Must be a positive integer.   |
-| `PX milliseconds`| integer | No       | Set expiry in milliseconds. Must be a positive integer. |
+| Argument          | Type    | Required | Description                                             |
+|-------------------|---------|----------|---------------------------------------------------------|
+| `key`             | string  | Yes      | The key to set.                                         |
+| `value`           | string  | Yes      | The value to store.                                     |
+| `EX seconds`      | integer | No       | Set expiry in seconds. Must be a positive integer.      |
+| `PX milliseconds` | integer | No       | Set expiry in milliseconds. Must be a positive integer. |
 
 `EX` and `PX` are mutually exclusive — providing both is a syntax error.
 
@@ -32,18 +32,15 @@ SET key value [EX seconds | PX milliseconds]
 ## Examples
 
 ```
-> SET name "helix"
+> SET name helix
 OK
 
-> SET counter 42
+> SET session abc123 EX 3600
 OK
 
-> SET session "abc123" EX 3600
-OK
-
-> SET token "xyz" PX 5000
+> SET token xyz PX 5000
 OK
 
 > SET key value EX 10 PX 10000
-(error) syntax error
+error: syntax error
 ```

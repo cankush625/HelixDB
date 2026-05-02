@@ -10,10 +10,10 @@ EXPIRE key seconds
 
 ## Arguments
 
-| Argument  | Type    | Required | Description                                   |
-|-----------|---------|----------|-----------------------------------------------|
-| `key`     | string  | Yes      | The key to set the expiry on.                 |
-| `seconds` | integer | Yes      | Time to live in seconds. Must be positive.    |
+| Argument  | Type    | Required | Description                                |
+|-----------|---------|----------|--------------------------------------------|
+| `key`     | string  | Yes      | The key to set the expiry on.              |
+| `seconds` | integer | Yes      | Time to live in seconds. Must be positive. |
 
 ## Return value
 
@@ -28,15 +28,15 @@ EXPIRE key seconds
 ## Examples
 
 ```
-> SET greeting "hello"
+> SET greeting hello
 OK
 
 > EXPIRE greeting 10
-(integer) 1
+1
 
 > EXPIRE nonexistent 10
-(integer) 0
+0
 
 > EXPIRE greeting -1
-(error) invalid expire time in 'expire' command
+error: invalid expire time in 'expire' command
 ```

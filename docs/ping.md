@@ -25,6 +25,6 @@ PING [message]
 > PING
 PONG
 
-> PING "hello"
+> PING hello
 hello
 ```

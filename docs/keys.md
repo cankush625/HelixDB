@@ -2,7 +2,7 @@
 
 Returns all key names in the store that match the given glob-style pattern. Expired keys are excluded from the result.
 
-> **Warning:** `KEYS` iterates over all keys in the store. Avoid using it in production against large datasets — it blocks the store scan for the duration. Use it for debugging or administrative purposes only.
+> **Warning:** `KEYS` scans all keys in the store. Avoid using it against large datasets — use it for debugging or administrative purposes only.
 
 ## Syntax
 
@@ -18,12 +18,12 @@ KEYS pattern
 
 ### Supported pattern syntax
 
-| Pattern   | Matches                                      |
-|-----------|----------------------------------------------|
-| `*`       | Any sequence of characters                   |
-| `?`       | Any single character                         |
-| `[abc]`   | Any one character in the set                 |
-| `[a-z]`   | Any one character in the range               |
+| Pattern  | Matches                        |
+|----------|--------------------------------|
+| `*`      | Any sequence of characters     |
+| `?`      | Any single character           |
+| `[abc]`  | Any one character in the set   |
+| `[a-z]`  | Any one character in the range |
 
 > **Note:** Keys containing `/` are not fully supported with wildcard patterns.
 
@@ -39,28 +39,28 @@ List of matching key names. Empty if no keys match.
 ## Examples
 
 ```
-> SET user:1 "alice"
+> SET user:1 alice
 OK
 
-> SET user:2 "bob"
+> SET user:2 bob
 OK
 
-> SET session "xyz"
+> SET session xyz
 OK
 
 > KEYS *
-1) "user:1"
-2) "user:2"
-3) "session"
+user:1
+user:2
+session
 
 > KEYS user:*
-1) "user:1"
-2) "user:2"
+user:1
+user:2
 
 > KEYS user:?
-1) "user:1"
-2) "user:2"
+user:1
+user:2
 
 > KEYS nonexistent*
-(empty array)
+(empty)
 ```

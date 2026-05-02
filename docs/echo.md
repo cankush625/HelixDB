@@ -25,9 +25,9 @@ The message exactly as provided.
 ## Examples
 
 ```
-> ECHO "hello"
-"hello"
+> ECHO hello
+hello
 
 > ECHO
-(error) message is required
+error: message is required
 ```

@@ -10,9 +10,9 @@ DEL key [key ...]
 
 ## Arguments
 
-| Argument | Type   | Required | Description                      |
-|----------|--------|----------|----------------------------------|
-| `key`    | string | Yes      | One or more keys to delete.      |
+| Argument | Type   | Required | Description                 |
+|----------|--------|----------|-----------------------------|
+| `key`    | string | Yes      | One or more keys to delete. |
 
 ## Return value
 
@@ -32,8 +32,8 @@ OK
 OK
 
 > DEL a b nonexistent
-(integer) 2
+2
 
 > DEL nonexistent
-(integer) 0
+0
 ```
