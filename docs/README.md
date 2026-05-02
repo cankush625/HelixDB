@@ -1,1 +1,13 @@
-# Helix DB command docs
+# HelixDB Command Docs
+
+## Commands
+
+| Command                      | Description                                   |
+|------------------------------|-----------------------------------------------|
+| [PING](./ping.md)            | Test server liveness                          |
+| [ECHO](./echo.md)            | Echo a message back                           |
+| [GET](./get.md)              | Get the value of a key                        |
+| [SET](./set.md)              | Set key to a string value with optional TTL   |
+| [DEL](./del.md)              | Delete one or more keys                       |
+| [EXPIRE](./expire.md)        | Set a TTL on an existing key (in seconds)     |
+| [KEYS](./keys.md)            | Find keys matching a pattern                  |
