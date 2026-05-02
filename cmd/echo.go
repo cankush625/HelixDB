@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"HelixDB/common"
-	"bytes"
 	"errors"
 )
 
@@ -13,8 +12,5 @@ func Echo(command common.Cmd) ([]byte, error) {
 	if len(command.Args) != 1 {
 		return common.RespError("message is required"), MessageRequiredError
 	}
-	var buffer bytes.Buffer
-	buffer.WriteString("+" + command.Args[0])
-	buffer.WriteString(common.Terminator)
-	return []byte(buffer.String()), nil
+	return common.RespBulkString(command.Args[0]), nil
 }

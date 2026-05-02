@@ -15,7 +15,7 @@ func TestEcho(t *testing.T) {
 		want    []byte
 		wantErr error
 	}{
-		{common.Cmd{Name: "ECHO", Args: []string{"hello"}}, []byte("+hello\r\n"), nil},
+		{common.Cmd{Name: "ECHO", Args: []string{"hello"}}, []byte("$5\r\nhello\r\n"), nil},
 		{common.Cmd{Name: "ECHO"}, []byte("-message is required\r\n"), MessageRequiredError},
 	}
 	for _, test := range tests {

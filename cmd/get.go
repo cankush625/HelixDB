@@ -3,7 +3,6 @@ package cmd
 import (
 	"HelixDB/common"
 	"HelixDB/db"
-	"bytes"
 	"fmt"
 	"time"
 )
@@ -14,15 +13,11 @@ func Get(command common.Cmd) ([]byte, error) {
 	if len(command.Args) != 1 {
 		return common.RespError("wrong number of arguments"), WrongNumberOfArgumentsError
 	}
-	var buffer bytes.Buffer
 	value, err := GetValueFromMemory(command.Args[0])
 	if err != nil {
-		buffer.WriteString("$" + "-1")
-	} else {
-		buffer.WriteString("+" + value)
+		return common.RespNullBulkString(), nil
 	}
-	buffer.WriteString(common.Terminator)
-	return []byte(buffer.String()), nil
+	return common.RespBulkString(value), nil
 }
 
 func GetValueFromMemory(key string) (string, error) {
