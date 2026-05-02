@@ -24,6 +24,8 @@ func ExecuteCommand(command common.Cmd) ([]byte, error) {
 		return cmd.Expire(command)
 	case common.Del:
 		return cmd.Del(command)
+	case common.Keys:
+		return cmd.Keys(command)
 	}
 	return []byte("-unsupported command\r\n"), UnsupportedCommand
 }

@@ -11,6 +11,7 @@ const Get = "GET"
 const Set = "SET"
 const Expire = "EXPIRE"
 const Del = "DEL"
+const Keys = "KEYS"
 
 // Command Args
 // Expiration Args

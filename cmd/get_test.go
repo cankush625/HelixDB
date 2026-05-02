@@ -27,14 +27,14 @@ func TestGet(t *testing.T) {
 		wantErr error
 	}{
 		// Key exists in the cache (persistent)
-		{common.Cmd{Name: "GET", Args: []string{"tenant"}}, []byte("+ACME\r\n"), nil},
+		{common.Cmd{Name: "GET", Args: []string{"tenant"}}, []byte("$4\r\nACME\r\n"), nil},
 		// Key doesn't exist in the cache
 		{common.Cmd{Name: "GET", Args: []string{"org"}}, []byte("$-1\r\n"), nil},
 		// Wrong number of arguments to the GET command
 		{common.Cmd{Name: "GET"}, []byte("-wrong number of arguments\r\n"), WrongNumberOfArgumentsError},
 		{common.Cmd{Name: "GET", Args: []string{"tenant", "random_arg"}}, []byte("-wrong number of arguments\r\n"), WrongNumberOfArgumentsError},
 		// Key exists with a future TTL — should return value
-		{common.Cmd{Name: "GET", Args: []string{"active_key"}}, []byte("+value1\r\n"), nil},
+		{common.Cmd{Name: "GET", Args: []string{"active_key"}}, []byte("$6\r\nvalue1\r\n"), nil},
 		// Key exists but TTL already expired — should return nil
 		{common.Cmd{Name: "GET", Args: []string{"expired_key"}}, []byte("$-1\r\n"), nil},
 	}
