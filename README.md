@@ -11,20 +11,12 @@
 
 ## Supported Commands
 
-### Ping
-Returns the server's liveliness response. [learn more]()
-
-### Echo
-Returns the given string. [learn more]()
-
-### Get
-Returns the string data for the given key. [learn more]()
-
-### Set
-Sets the string data for the given key, ignoring its type. [learn more]()
-
-### DEL
-Deletes one or more keys. [learn more]()
-
-### KEYS
-Returns all key names that match the pattern. [learn more]()
+| Command                              | Description                                   |
+|--------------------------------------|-----------------------------------------------|
+| [PING](./docs/ping.md)               | Test server liveness                          |
+| [ECHO](./docs/echo.md)               | Echo a message back                           |
+| [GET](./docs/get.md)                 | Get the value of a key                        |
+| [SET](./docs/set.md)                 | Set key to a string value with optional TTL   |
+| [DEL](./docs/del.md)                 | Delete one or more keys                       |
+| [EXPIRE](./docs/expire.md)           | Set a TTL on an existing key (in seconds)     |
+| [KEYS](./docs/keys.md)               | Find keys matching a pattern                  |
