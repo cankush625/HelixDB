@@ -27,17 +27,22 @@ func Keys(command common.Cmd) ([]byte, error) {
 	}
 
 	now := time.Now().UnixMilli()
+	matchAll := pattern == "*"
 	var keys []string
-	db.DB.Range(func(k, _ any) bool {
-		key := k.(string)
+
+	// Iterate KeyTTL as the single source of truth for all live keys,
+	// avoiding a separate DB lookup per key.
+	db.KeyTTL.Range(func(k, value any) bool {
 		// Skip expired keys
-		if expirationTime, ok := db.KeyTTL.Load(key); ok {
-			if expirationTime != nil && expirationTime.(int64) < now {
-				return true
-			}
+		if value != nil && value.(int64) < now {
+			return true
 		}
-		matched, _ := path.Match(pattern, key)
-		if matched {
+		key := k.(string)
+		if matchAll {
+			keys = append(keys, key)
+			return true
+		}
+		if matched, _ := path.Match(pattern, key); matched {
 			keys = append(keys, key)
 		}
 		return true

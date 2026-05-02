@@ -63,10 +63,10 @@ func TestKeys(t *testing.T) {
 	}
 }
 
-// matchBulkStringArray checks that a RESP bulk string array response
-// contains exactly the expected keys, regardless of order.
-func matchBulkStringArray(resp []byte, expectedKeys []string) bool {
-	lines := strings.Split(string(resp), "\r\n")
+// matchBulkStringArray checks that a command response bytes
+// contain exactly the expected keys as bulk strings, regardless of order.
+func matchBulkStringArray(rawResponse []byte, expectedKeys []string) bool {
+	lines := strings.Split(string(rawResponse), "\r\n")
 	if len(lines) == 0 {
 		return false
 	}
