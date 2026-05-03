@@ -22,6 +22,7 @@ func Keys(command common.Cmd) ([]byte, error) {
 		return common.RespError(err.Error()), err
 	}
 	pattern := command.Args[0]
+	// Validate pattern before scanning — path.Match returns ErrBadPattern for invalid syntax.
 	if _, err := path.Match(pattern, ""); err != nil {
 		return common.RespError("invalid pattern"), SyntaxError
 	}
@@ -30,7 +31,10 @@ func Keys(command common.Cmd) ([]byte, error) {
 	matchAll := pattern == "*"
 	var keys []string
 
+	// Iterate KeyTTL as the single source of truth for all live keys,
+	// avoiding a separate DB lookup per key.
 	db.KeyTTL.Range(func(k, value any) bool {
+		// Skip expired keys
 		if value != nil && value.(int64) < now {
 			return true
 		}
