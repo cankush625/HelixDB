@@ -17,3 +17,13 @@ const Keys = "KEYS"
 // Expiration Args
 const EX = "EX"
 const PX = "PX"
+const EXAT = "EXAT"
+const PXAT = "PXAT"
+
+// Conditional Set Args
+const NX = "NX"
+const XX = "XX"
+
+// Other Set Args
+const KEEPTTL = "KEEPTTL"
+const GET = "GET"
