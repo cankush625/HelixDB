@@ -1,4 +1,8 @@
-# HelixDB Command Docs
+# HelixDB Docs
+
+- [Usage Guide](./usage.md) — Getting started: running the server, connecting, and common operations
+
+## Commands
 
 ## Commands
 

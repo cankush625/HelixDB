@@ -7,6 +7,10 @@
     <img src="./assets/logo.png" width="150">
 </p>
 
+## Getting Started
+
+See the [Usage Guide](./docs/usage.md) for installation, connecting, and a walkthrough of common operations.
+
 ## Installation
 
 ## Supported Commands
