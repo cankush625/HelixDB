@@ -21,8 +21,8 @@ func TestExpire(t *testing.T) {
 		// Key does not exist — returns 0
 		{common.Cmd{Name: "EXPIRE", Args: []string{"ghost", "60"}}, []byte(":0\r\n"), nil},
 		// Wrong number of arguments
-		{common.Cmd{Name: "EXPIRE", Args: []string{"tenant"}}, []byte("-wrong number of arguments\r\n"), WrongNumberOfArgumentsError},
-		{common.Cmd{Name: "EXPIRE"}, []byte("-wrong number of arguments\r\n"), WrongNumberOfArgumentsError},
+		{common.Cmd{Name: "EXPIRE", Args: []string{"tenant"}}, []byte("-wrong number of arguments for 'expire' command\r\n"), common.ErrWrongNumberOfArgs},
+		{common.Cmd{Name: "EXPIRE"}, []byte("-wrong number of arguments for 'expire' command\r\n"), common.ErrWrongNumberOfArgs},
 		// Non-numeric seconds
 		{common.Cmd{Name: "EXPIRE", Args: []string{"tenant", "abc"}}, []byte("-invalid expire time in 'expire' command\r\n"), InvalidExpireTimeForExpireError},
 		// Zero seconds — must be positive

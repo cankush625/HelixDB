@@ -10,7 +10,8 @@ import (
 // Returns the number of keys that were actually deleted as a RESP integer.
 func Del(command common.Cmd) ([]byte, error) {
 	if len(command.Args) < 1 {
-		return common.RespError("wrong number of arguments"), WrongNumberOfArgumentsError
+		err := common.WrongNumberOfArgsError(command.Name)
+		return common.RespError(err.Error()), err
 	}
 	deleted := 0
 	for _, key := range command.Args {

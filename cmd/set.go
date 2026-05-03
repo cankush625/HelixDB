@@ -9,7 +9,6 @@ import (
 	"time"
 )
 
-var MissingArgumentsError = errors.New("missing arguments")
 var SyntaxError = errors.New("syntax error")
 var InvalidExpireTimeError = errors.New("invalid expire time in 'set' command")
 
@@ -31,7 +30,8 @@ var valueArgs = map[string]bool{
 
 func Set(command common.Cmd) ([]byte, error) {
 	if len(command.Args) < 2 {
-		return common.RespError("missing arguments"), MissingArgumentsError
+		err := common.WrongNumberOfArgsError(command.Name)
+		return common.RespError(err.Error()), err
 	}
 
 	key, value := command.Args[0], command.Args[1]

@@ -29,14 +29,14 @@ func TestExecuteCommand(t *testing.T) {
 		{common.Cmd{Name: "ECHO"}, []byte("-message is required\r\n"), cmd.MessageRequiredError},
 		// SET command
 		{common.Cmd{Name: "SET", Args: []string{"tenant", "ACME"}}, []byte("+OK\r\n"), nil},
-		{common.Cmd{Name: "SET", Args: []string{"tenant"}}, []byte("-missing arguments\r\n"), cmd.MissingArgumentsError},
-		{common.Cmd{Name: "SET"}, []byte("-missing arguments\r\n"), cmd.MissingArgumentsError},
+		{common.Cmd{Name: "SET", Args: []string{"tenant"}}, []byte("-wrong number of arguments for 'set' command\r\n"), common.ErrWrongNumberOfArgs},
+		{common.Cmd{Name: "SET"}, []byte("-wrong number of arguments for 'set' command\r\n"), common.ErrWrongNumberOfArgs},
 		{common.Cmd{Name: "SET", Args: []string{"tenant", "ACME", "asd"}}, []byte("-syntax error\r\n"), cmd.SyntaxError},
 		// GET command
 		{common.Cmd{Name: "GET", Args: []string{"tenant"}}, []byte("$4\r\nACME\r\n"), nil},
 		{common.Cmd{Name: "GET", Args: []string{"org"}}, []byte("$-1\r\n"), nil},
-		{common.Cmd{Name: "GET"}, []byte("-wrong number of arguments\r\n"), cmd.WrongNumberOfArgumentsError},
-		{common.Cmd{Name: "GET", Args: []string{"tenant", "random_arg"}}, []byte("-wrong number of arguments\r\n"), cmd.WrongNumberOfArgumentsError},
+		{common.Cmd{Name: "GET"}, []byte("-wrong number of arguments for 'get' command\r\n"), common.ErrWrongNumberOfArgs},
+		{common.Cmd{Name: "GET", Args: []string{"tenant", "random_arg"}}, []byte("-wrong number of arguments for 'get' command\r\n"), common.ErrWrongNumberOfArgs},
 		// Unsupported/Invalid command
 		{common.Cmd{Name: "UNSUPPORTED"}, []byte("-unsupported command\r\n"), UnsupportedCommand},
 	}

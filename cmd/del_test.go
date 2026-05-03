@@ -25,7 +25,7 @@ func TestDel(t *testing.T) {
 		// Delete multiple keys — key2 exists, key3 exists, ghost does not
 		{common.Cmd{Name: "DEL", Args: []string{"key2", "key3", "ghost"}}, []byte(":2\r\n"), nil},
 		// Wrong number of arguments
-		{common.Cmd{Name: "DEL"}, []byte("-wrong number of arguments\r\n"), WrongNumberOfArgumentsError},
+		{common.Cmd{Name: "DEL"}, []byte("-wrong number of arguments for 'del' command\r\n"), common.ErrWrongNumberOfArgs},
 	}
 	for _, test := range tests {
 		if got, gotErr := Del(test.command); !reflect.DeepEqual(got, test.want) || !errors.Is(gotErr, test.wantErr) {
