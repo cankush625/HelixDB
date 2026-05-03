@@ -18,7 +18,8 @@ import (
 // Note: keys containing '/' are not fully supported with wildcard patterns.
 func Keys(command common.Cmd) ([]byte, error) {
 	if len(command.Args) != 1 {
-		return common.RespError("wrong number of arguments"), WrongNumberOfArgumentsError
+		err := common.WrongNumberOfArgsError(command.Name)
+		return common.RespError(err.Error()), err
 	}
 	pattern := command.Args[0]
 	// Validate pattern before scanning — path.Match returns ErrBadPattern for invalid syntax.

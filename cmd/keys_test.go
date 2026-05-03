@@ -42,8 +42,8 @@ func TestKeys(t *testing.T) {
 		// Character class
 		{common.Cmd{Name: "KEYS", Args: []string{"h[ae]llo"}}, []string{"hello", "hallo"}, nil},
 		// Wrong number of arguments
-		{common.Cmd{Name: "KEYS"}, nil, WrongNumberOfArgumentsError},
-		{common.Cmd{Name: "KEYS", Args: []string{"*", "extra"}}, nil, WrongNumberOfArgumentsError},
+		{common.Cmd{Name: "KEYS"}, nil, common.ErrWrongNumberOfArgs},
+		{common.Cmd{Name: "KEYS", Args: []string{"*", "extra"}}, nil, common.ErrWrongNumberOfArgs},
 		// Invalid pattern — unclosed bracket
 		{common.Cmd{Name: "KEYS", Args: []string{"["}}, nil, SyntaxError},
 	}

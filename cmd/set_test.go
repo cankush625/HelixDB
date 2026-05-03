@@ -20,8 +20,8 @@ func TestSet(t *testing.T) {
 		// Basic SET
 		{common.Cmd{Name: "SET", Args: []string{"tenant", "ACME"}}, []byte("+OK\r\n"), nil},
 		// Missing key/value
-		{common.Cmd{Name: "SET", Args: []string{"tenant"}}, []byte("-missing arguments\r\n"), MissingArgumentsError},
-		{common.Cmd{Name: "SET"}, []byte("-missing arguments\r\n"), MissingArgumentsError},
+		{common.Cmd{Name: "SET", Args: []string{"tenant"}}, []byte("-wrong number of arguments for 'set' command\r\n"), common.ErrWrongNumberOfArgs},
+		{common.Cmd{Name: "SET"}, []byte("-wrong number of arguments for 'set' command\r\n"), common.ErrWrongNumberOfArgs},
 		// Unknown option
 		{common.Cmd{Name: "SET", Args: []string{"tenant", "ACME", "asd"}}, []byte("-syntax error\r\n"), SyntaxError},
 		// Valid EX
