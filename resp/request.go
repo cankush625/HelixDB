@@ -1,6 +1,7 @@
 package resp
 
 import (
+	"HelixDB/common"
 	"HelixDB/exc"
 	"net"
 )
@@ -8,16 +9,14 @@ import (
 func PerformRequest(buffer []byte, conn net.Conn) {
 	command, err := ParseCommand(buffer)
 	if err != nil {
-		ReplyCommand([]byte("-unsupported command\r\n"), conn)
+		ReplyCommand(common.RespError("invalid request"), conn)
 		return
 	}
 	if command.Name == "" {
 		return
 	}
-	reply, err := exc.ExecuteCommand(command)
-	if err != nil {
-		ReplyCommand([]byte("-error executing the command\r\n"), conn)
-		return
-	}
+	// ExecuteCommand always returns a valid RESP-encoded reply in the []byte,
+	// even on error. Send it directly — the error is only for the Go call stack.
+	reply, _ := exc.ExecuteCommand(command)
 	ReplyCommand(reply, conn)
 }
