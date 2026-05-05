@@ -20,6 +20,9 @@ const (
 func StartActiveExpiry() {
 	go func() {
 		for {
+			// A fresh ticker is created on every iteration so that changes to hz
+			// via CONFIG SET take effect on the next cycle without a restart.
+			// Reusing a single ticker would lock in the interval set at startup.
 			interval := ServerConfig.CleanupInterval()
 			ticker := time.NewTicker(interval)
 			<-ticker.C
