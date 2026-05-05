@@ -5,7 +5,6 @@ import (
 )
 
 const (
-	cleanupInterval       = time.Second
 	chunkSize             = 20
 	expiredRatioThreshold = 0.25
 )
@@ -16,11 +15,22 @@ const (
 // If the expired ratio within a chunk exceeds expiredRatioThreshold, it
 // immediately runs another round rather than waiting for the next tick —
 // this handles bursts of expiring keys efficiently.
+// The cleanup interval is derived from ServerConfig.Hz and is re-read on
+// each tick, so CONFIG SET hz takes effect without a restart.
 func StartActiveExpiry() {
 	go func() {
-		ticker := time.NewTicker(cleanupInterval)
-		defer ticker.Stop()
-		for range ticker.C {
+		for {
+			// A fresh ticker is created on every iteration so that changes to hz
+			// via CONFIG SET take effect on the next cycle without a restart.
+			// Reusing a single ticker would lock in the interval set at startup.
+			interval := ServerConfig.CleanupInterval()
+			ticker := time.NewTicker(interval)
+			<-ticker.C
+			ticker.Stop()
+
+			if !ServerConfig.ActiveExpireEnabled {
+				continue
+			}
 			for {
 				total, expired := cleanExpiredKeys()
 				if total < chunkSize || float64(expired)/float64(total) < expiredRatioThreshold {
