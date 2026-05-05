@@ -19,6 +19,10 @@ type Config struct {
 
 	// MaxMemory is the maximum memory limit in bytes. 0 means unlimited.
 	MaxMemory int64
+
+	// Port is the TCP port the server is listening on. Set once at startup from
+	// the --port flag; read-only at runtime (changing it would require a rebind).
+	Port int
 }
 
 // ServerConfig is the package-level config instance used across the server.
@@ -26,6 +30,7 @@ var ServerConfig = &Config{
 	Hz:                  1,
 	ActiveExpireEnabled: true,
 	MaxMemory:           0,
+	Port:                6378,
 }
 
 // CleanupInterval returns the active expiry ticker interval derived from Hz.
@@ -50,6 +55,8 @@ func (c *Config) Get(param string) (string, bool) {
 		return boolToYesNo(c.ActiveExpireEnabled), true
 	case "maxmemory":
 		return itoa64(c.MaxMemory), true
+	case "port":
+		return itoa(c.Port), true
 	}
 	return "", false
 }
