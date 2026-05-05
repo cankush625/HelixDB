@@ -15,3 +15,4 @@
 | [DEL](./del.md)              | Delete one or more keys                       |
 | [EXPIRE](./expire.md)        | Set a TTL on an existing key (in seconds)     |
 | [KEYS](./keys.md)            | Find keys matching a pattern                  |
+| [CONFIG](./config.md)        | Read and modify server configuration          |
