@@ -29,11 +29,12 @@ CONFIG SET parameter value
 
 ## Supported parameters
 
-| Parameter               | Type    | Default | Description                                              |
-|-------------------------|---------|---------|----------------------------------------------------------|
-| `hz`                    | integer | `1`     | Number of active expiry cycles per second. Must be > 0.  |
-| `active-expire-enabled` | yes/no  | `yes`   | Enable or disable the active expiry background job.      |
-| `maxmemory`             | integer | `0`     | Max memory in bytes. `0` means unlimited.                |
+| Parameter               | Type    | Default | Writable | Description                                              |
+|-------------------------|---------|---------|----------|----------------------------------------------------------|
+| `hz`                    | integer | `1`     | yes      | Number of active expiry cycles per second. Must be > 0.  |
+| `active-expire-enabled` | yes/no  | `yes`   | yes      | Enable or disable the active expiry background job.      |
+| `maxmemory`             | integer | `0`     | yes      | Max memory in bytes. `0` means unlimited.                |
+| `port`                  | integer | `6378`  | no       | TCP port the server is listening on. Set via `--port` flag at startup. |
 
 ## Return value
 
@@ -74,4 +75,8 @@ maxmemory
 
 > CONFIG SET maxmemory 1073741824
 OK
+
+> CONFIG GET port
+port
+6378
 ```
