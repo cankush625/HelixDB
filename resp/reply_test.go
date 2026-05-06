@@ -6,32 +6,44 @@ import (
 	"testing"
 )
 
-func TestReplyCommand_WritesBytes(t *testing.T) {
-	server, client := net.Pipe()
-	defer server.Close()
-
-	ch := make(chan []byte, 1)
-	go func() {
-		b, _ := io.ReadAll(client)
-		ch <- b
-	}()
-
-	reply := []byte("+PONG\r\n")
-	ReplyCommand(reply, server)
-	server.Close()
-
-	got := <-ch
-	if string(got) != string(reply) {
-		t.Errorf("got %q, want %q", got, reply)
+// TestReplyCommand tests the ReplyCommand function for
+// all possible valid and invalid inputs
+func TestReplyCommand(t *testing.T) {
+	tests := []struct {
+		reply []byte
+		want  string
+	}{
+		{[]byte("+PONG\r\n"), "+PONG\r\n"},
+		{[]byte("+OK\r\n"), "+OK\r\n"},
+		{[]byte("$5\r\nhello\r\n"), "$5\r\nhello\r\n"},
+		{[]byte("-error message\r\n"), "-error message\r\n"},
 	}
-	client.Close()
+	for _, test := range tests {
+		server, client := net.Pipe()
+
+		ch := make(chan []byte, 1)
+		go func() {
+			b, _ := io.ReadAll(client)
+			ch <- b
+		}()
+
+		ReplyCommand(test.reply, server)
+		server.Close()
+
+		got := string(<-ch)
+		if got != test.want {
+			t.Errorf("ReplyCommand(%q) = %q; want %q", test.reply, got, test.want)
+		}
+		client.Close()
+	}
 }
 
+// TestReplyCommand_ClosedConn tests that ReplyCommand does not panic
+// when the connection is already closed
 func TestReplyCommand_ClosedConn(t *testing.T) {
 	server, client := net.Pipe()
 	client.Close()
 
-	// Should not panic even when the connection is closed
 	defer func() {
 		if r := recover(); r != nil {
 			t.Errorf("ReplyCommand panicked on closed connection: %v", r)

@@ -30,73 +30,33 @@ func readReply(client net.Conn) <-chan []byte {
 	return ch
 }
 
-func TestPerformRequest_ValidPing(t *testing.T) {
-	server, client := newPipe(t)
-	ch := readReply(client)
-
-	PerformRequest([]byte("*1\r\n$4\r\nPING\r\n"), server)
-	server.Close()
-
-	got := string(<-ch)
-	want := "+PONG\r\n"
-	if got != want {
-		t.Errorf("got %q, want %q", got, want)
+// TestPerformRequest tests the PerformRequest function for
+// all possible valid and invalid inputs
+func TestPerformRequest(t *testing.T) {
+	tests := []struct {
+		input []byte
+		want  string
+	}{
+		// Valid commands
+		{[]byte("*1\r\n$4\r\nPING\r\n"), "+PONG\r\n"},
+		{[]byte("*2\r\n$4\r\nECHO\r\n$5\r\nhello\r\n"), "$5\r\nhello\r\n"},
+		// Invalid RESP prefix
+		{[]byte("%1\r\n$4\r\nPING\r\n"), "-invalid request\r\n"},
+		// Unknown command
+		{[]byte("*1\r\n$3\r\nFOO\r\n"), "-unsupported command\r\n"},
+		// nil buffer — ParseCommand returns zero-value Cmd with empty Name, nothing written
+		{nil, ""},
 	}
-}
+	for _, test := range tests {
+		server, client := newPipe(t)
+		ch := readReply(client)
 
-func TestPerformRequest_ValidEcho(t *testing.T) {
-	server, client := newPipe(t)
-	ch := readReply(client)
+		PerformRequest(test.input, server)
+		server.Close()
 
-	PerformRequest([]byte("*2\r\n$4\r\nECHO\r\n$5\r\nhello\r\n"), server)
-	server.Close()
-
-	got := string(<-ch)
-	want := "$5\r\nhello\r\n"
-	if got != want {
-		t.Errorf("got %q, want %q", got, want)
-	}
-}
-
-func TestPerformRequest_InvalidRESP(t *testing.T) {
-	server, client := newPipe(t)
-	ch := readReply(client)
-
-	// Unsupported RESP data type prefix
-	PerformRequest([]byte("%1\r\n$4\r\nPING\r\n"), server)
-	server.Close()
-
-	got := string(<-ch)
-	want := "-invalid request\r\n"
-	if got != want {
-		t.Errorf("got %q, want %q", got, want)
-	}
-}
-
-func TestPerformRequest_UnknownCommand(t *testing.T) {
-	server, client := newPipe(t)
-	ch := readReply(client)
-
-	PerformRequest([]byte("*1\r\n$3\r\nFOO\r\n"), server)
-	server.Close()
-
-	got := string(<-ch)
-	want := "-unsupported command\r\n"
-	if got != want {
-		t.Errorf("got %q, want %q", got, want)
-	}
-}
-
-func TestPerformRequest_EmptyBuffer(t *testing.T) {
-	server, client := newPipe(t)
-	ch := readReply(client)
-
-	// nil buffer — ParseCommand returns zero-value Cmd with empty Name, nothing written
-	PerformRequest(nil, server)
-	server.Close()
-
-	got := string(<-ch)
-	if got != "" {
-		t.Errorf("expected no reply for empty buffer, got %q", got)
+		got := string(<-ch)
+		if got != test.want {
+			t.Errorf("PerformRequest(%q) = %q; want %q", test.input, got, test.want)
+		}
 	}
 }
