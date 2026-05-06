@@ -24,7 +24,7 @@ func ParseCommand(command []byte) (common.Cmd, error) {
 		return common.Cmd{}, UnsupportedCommandDataTypeError
 	}
 	data := strings.Split(string(command), common.Terminator)
-	if dataType == Array {
+	if dataType == common.Array {
 		return parseArray(data)
 	}
 	return common.Cmd{}, nil
