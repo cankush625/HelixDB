@@ -4,6 +4,7 @@ import (
 	"HelixDB/common"
 	"HelixDB/db"
 	"errors"
+	"strings"
 )
 
 var ErrUnknownSubcommand = errors.New("unknown subcommand")
@@ -18,7 +19,8 @@ func ConfigCmd(command common.Cmd) ([]byte, error) {
 		return common.RespError(err.Error()), err
 	}
 
-	subcommand := command.Args[0]
+	// Uppercase for case-insensitive matching — subcommands are case-insensitive.
+	subcommand := strings.ToUpper(command.Args[0])
 
 	switch subcommand {
 	case "GET":
