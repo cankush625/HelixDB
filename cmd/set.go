@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"errors"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -37,10 +38,8 @@ func Set(command common.Cmd) ([]byte, error) {
 	key, value := command.Args[0], command.Args[1]
 
 	argsMap, err := parseSetArgs(command.Args)
-	if err != nil && errors.Is(err, SyntaxError) {
-		return common.RespError("syntax error"), SyntaxError
-	} else if err != nil {
-		return common.RespError("error"), err
+	if err != nil {
+		return common.RespError(err.Error()), err
 	}
 
 	// GET — capture old value before making any changes.
@@ -100,7 +99,8 @@ func parseSetArgs(args []string) (map[string]any, error) {
 	result := make(map[string]any)
 
 	for i := 0; i < len(extraArgs); {
-		arg := extraArgs[i]
+		// Uppercase for case-insensitive matching — Redis options are case-insensitive.
+		arg := strings.ToUpper(extraArgs[i])
 		if flagArgs[arg] {
 			if _, exists := result[arg]; exists {
 				return nil, SyntaxError

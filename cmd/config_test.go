@@ -27,6 +27,8 @@ func TestConfigGet(t *testing.T) {
 		{common.Cmd{Name: "CONFIG", Args: []string{"GET", "unknown"}}, common.RespError("unknown config parameter 'unknown'"), ErrUnknownConfigParam},
 		// Wrong number of arguments
 		{common.Cmd{Name: "CONFIG", Args: []string{"GET"}}, common.RespError("wrong number of arguments for 'config' command"), common.ErrWrongNumberOfArgs},
+		// Case-insensitive subcommand
+		{common.Cmd{Name: "CONFIG", Args: []string{"get", "hz"}}, common.RespBulkStringArray([]string{"hz", "1"}), nil},
 	}
 	for _, test := range tests {
 		got, gotErr := ConfigCmd(test.command)
@@ -54,6 +56,8 @@ func TestConfigSet(t *testing.T) {
 		{common.Cmd{Name: "CONFIG", Args: []string{"SET", "unknown", "value"}}, common.RespError("invalid value for config parameter 'unknown'"), ErrInvalidConfigValue},
 		// Wrong number of arguments
 		{common.Cmd{Name: "CONFIG", Args: []string{"SET", "hz"}}, common.RespError("wrong number of arguments for 'config' command"), common.ErrWrongNumberOfArgs},
+		// Case-insensitive subcommand
+		{common.Cmd{Name: "CONFIG", Args: []string{"set", "hz", "10"}}, []byte("+OK\r\n"), nil},
 	}
 	for _, test := range tests {
 		got, gotErr := ConfigCmd(test.command)
@@ -64,9 +68,20 @@ func TestConfigSet(t *testing.T) {
 }
 
 func TestConfigUnknownSubcommand(t *testing.T) {
-	got, gotErr := ConfigCmd(common.Cmd{Name: "CONFIG", Args: []string{"REWRITE"}})
-	if !reflect.DeepEqual(got, common.RespError("unknown subcommand 'REWRITE' for 'config' command")) || !errors.Is(gotErr, ErrUnknownSubcommand) {
-		t.Errorf("ConfigCmd REWRITE = %v, %v; want error response, ErrUnknownSubcommand", got, gotErr)
+	tests := []struct {
+		command common.Cmd
+		want    []byte
+	}{
+		// Uppercase unknown subcommand
+		{common.Cmd{Name: "CONFIG", Args: []string{"REWRITE"}}, common.RespError("unknown subcommand 'REWRITE' for 'config' command")},
+		// Lowercase unknown subcommand — uppercased before error message
+		{common.Cmd{Name: "CONFIG", Args: []string{"rewrite"}}, common.RespError("unknown subcommand 'REWRITE' for 'config' command")},
+	}
+	for _, test := range tests {
+		got, gotErr := ConfigCmd(test.command)
+		if !reflect.DeepEqual(got, test.want) || !errors.Is(gotErr, ErrUnknownSubcommand) {
+			t.Errorf("ConfigCmd(%v) = %v, %v; want %v, ErrUnknownSubcommand", test.command, got, gotErr, test.want)
+		}
 	}
 }
 

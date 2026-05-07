@@ -58,6 +58,11 @@ func TestSet(t *testing.T) {
 		{common.Cmd{Name: "SET", Args: []string{"tenant", "ACME", "NX", "XX"}}, []byte("-syntax error\r\n"), SyntaxError},
 		// EX and KEEPTTL together — mutually exclusive
 		{common.Cmd{Name: "SET", Args: []string{"tenant", "ACME", "EX", "10", "KEEPTTL"}}, []byte("-syntax error\r\n"), SyntaxError},
+		// Case-insensitive options
+		{common.Cmd{Name: "SET", Args: []string{"tenant", "ACME", "ex", "10"}}, []byte("+OK\r\n"), nil},
+		{common.Cmd{Name: "SET", Args: []string{"tenant", "ACME", "px", "5000"}}, []byte("+OK\r\n"), nil},
+		{common.Cmd{Name: "SET", Args: []string{"ci_nx_key", "ACME", "nx"}}, []byte("+OK\r\n"), nil},
+		{common.Cmd{Name: "SET", Args: []string{"tenant", "ACME", "keepttl"}}, []byte("+OK\r\n"), nil},
 	}
 	for _, test := range tests {
 		if got, gotErr := Set(test.command); !reflect.DeepEqual(got, test.want) || !errors.Is(gotErr, test.wantErr) {
