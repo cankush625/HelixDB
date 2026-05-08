@@ -1,22 +1,26 @@
 package resp
 
 import (
+	"bufio"
+	"io"
 	"net"
 )
 
-// HandleConn does a read and write to the connection
+// HandleConn reads RESP commands from the connection and writes replies.
+// It uses a bufio.Reader to read one complete RESP message at a time,
+// so commands split across multiple TCP packets are handled correctly.
 func HandleConn(conn net.Conn) {
-	buffer := make([]byte, 1024)
+	reader := bufio.NewReader(conn)
 	for {
-		n, err := conn.Read(buffer)
+		msg, err := readMessage(reader)
 		if err != nil {
+			// io.EOF means the client closed the connection cleanly.
+			if err == io.EOF {
+				return
+			}
 			conn.Write([]byte("-Error processing\r\n"))
 			return
 		}
-		if n == 0 {
-			conn.Write([]byte("-Error processing\r\n"))
-			return
-		}
-		PerformRequest(buffer[:n], conn)
+		PerformRequest(msg, conn)
 	}
 }
