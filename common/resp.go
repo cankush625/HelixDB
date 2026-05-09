@@ -37,6 +37,11 @@ func RespBulkStringArray(items []string) []byte {
 	return buffer.Bytes()
 }
 
+// RespSimpleString formats a value as a RESP simple string: +value\r\n
+func RespSimpleString(value string) []byte {
+	return []byte("+" + value + Terminator)
+}
+
 func RespInteger(n int) []byte {
 	var buffer bytes.Buffer
 	buffer.WriteString(":")

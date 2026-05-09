@@ -25,3 +25,4 @@ See the [Usage Guide](./docs/usage.md) for installation, connecting, and a walkt
 | [EXPIRE](./docs/expire.md)           | Set a TTL on an existing key (in seconds)     |
 | [KEYS](./docs/keys.md)               | Find keys matching a pattern                  |
 | [CONFIG](./docs/config.md)           | Read and modify server configuration          |
+| [TYPE](./docs/type.md)               | Return the type of the value stored at a key  |

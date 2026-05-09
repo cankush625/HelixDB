@@ -13,6 +13,7 @@ const Expire = "EXPIRE"
 const Del = "DEL"
 const Keys = "KEYS"
 const Config = "CONFIG"
+const Type = "TYPE"
 
 // Command Args
 // Expiration Args
