@@ -2,6 +2,8 @@
 
 Returns the type of the value stored at a key.
 
+> **Note:** HelixDB's `TYPE` command returns the *value type* (the detected type of the stored string), not the *data structure type* as Redis does. In Redis, `TYPE` always returns `string` for any string key. HelixDB extends this to distinguish integers, floats, booleans, and JSON. When data structure types (List, Hash, Set, Sorted Set) are added in future, `TYPE` will return their names as Redis does.
+
 ## Syntax
 
 ```
