@@ -32,5 +32,5 @@ func GetValueFromMemory(key string) (string, error) {
 	if !ok {
 		return "", fmt.Errorf("key not found")
 	}
-	return data.(string), nil
+	return data.(db.Value).Raw, nil
 }

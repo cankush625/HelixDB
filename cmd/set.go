@@ -188,7 +188,7 @@ func processSetArgs(key string, args map[string]any) error {
 	return nil
 }
 
-// setValueInMemory stores the value in the in-memory DB against the key.
+// setValueInMemory detects the type of value and stores it in the in-memory DB.
 func setValueInMemory(key string, value string) {
-	db.DB.Store(key, value)
+	db.DB.Store(key, db.NewValue(value))
 }
