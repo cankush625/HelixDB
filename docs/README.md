@@ -17,3 +17,4 @@
 | [KEYS](./keys.md)            | Find keys matching a pattern                  |
 | [CONFIG](./config.md)        | Read and modify server configuration          |
 | [TYPE](./type.md)            | Return the type of the value stored at a key  |
+| [EXISTS](./exists.md)        | Check if one or more keys exist               |
