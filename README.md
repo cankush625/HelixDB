@@ -27,3 +27,5 @@ See the [Usage Guide](./docs/usage.md) for installation, connecting, and a walkt
 | [CONFIG](./docs/config.md)           | Read and modify server configuration          |
 | [TYPE](./docs/type.md)               | Return the type of the value stored at a key  |
 | [EXISTS](./docs/exists.md)           | Check if one or more keys exist               |
+| [TTL](./docs/ttl.md)                 | Get remaining TTL of a key in seconds         |
+| [PTTL](./docs/pttl.md)              | Get remaining TTL of a key in milliseconds    |
