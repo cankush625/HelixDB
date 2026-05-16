@@ -1,6 +1,7 @@
 package db
 
 import (
+	"math/rand"
 	"time"
 )
 
@@ -47,18 +48,35 @@ func StartActiveExpiry(stop <-chan struct{}) {
 	}()
 }
 
-// cleanExpiredKeys scans up to chunkSize keys from KeyTTL, deletes any that
-// have expired, and returns the number of keys scanned and the number deleted.
+// cleanExpiredKeys samples up to chunkSize keys from KeyTTL in random order,
+// deletes any that have expired, and returns the number of keys sampled and
+// the number deleted.
+// Randomisation ensures that all keys get a fair chance of being checked
+// regardless of insertion order, avoiding the bias that sync.Map.Range's
+// consistent iteration order would otherwise introduce.
 func cleanExpiredKeys() (total int, expired int) {
+	// Collect all keys that have a TTL set.
+	var keys []any
+	KeyTTL.Range(func(key, _ any) bool {
+		keys = append(keys, key)
+		return true
+	})
+
+	// Shuffle so every key has an equal chance of landing in the sample window.
+	rand.Shuffle(len(keys), func(i, j int) { keys[i], keys[j] = keys[j], keys[i] })
+
 	now := time.Now().UnixMilli()
-	KeyTTL.Range(func(key, value any) bool {
+	for _, key := range keys {
+		if total >= chunkSize {
+			break
+		}
 		total++
-		if value != nil && value.(int64) < now {
+		value, ok := KeyTTL.Load(key)
+		if ok && value != nil && value.(int64) < now {
 			KeyTTL.Delete(key)
 			DB.Delete(key)
 			expired++
 		}
-		return total < chunkSize
-	})
+	}
 	return
 }
