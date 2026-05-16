@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
+	"sync"
+	"syscall"
 )
 
 func main() {
@@ -22,14 +25,36 @@ func main() {
 		fmt.Printf("Failed to bind to port %d\n", *port)
 		os.Exit(1)
 	}
-	defer l.Close()
-	db.StartActiveExpiry()
+
+	stop := make(chan struct{})
+	db.StartActiveExpiry(stop)
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-quit
+		fmt.Println("Shutting down...")
+		close(stop)
+		l.Close()
+	}()
+
+	var wg sync.WaitGroup
 	for {
 		conn, err := l.Accept()
 		if err != nil {
-			fmt.Println("Error accepting connection: ", err.Error())
-			continue
+			// l.Close() during shutdown causes Accept to return an error.
+			// Check if we're shutting down to avoid a spurious log line.
+			select {
+			case <-stop:
+			default:
+				fmt.Println("Error accepting connection: ", err.Error())
+			}
+			break
 		}
-		go resp.HandleConn(conn)
+		wg.Add(1)
+		go resp.HandleConn(conn, &wg)
 	}
+
+	wg.Wait()
+	fmt.Println("Shutdown complete.")
 }
