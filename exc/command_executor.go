@@ -32,6 +32,10 @@ func ExecuteCommand(command common.Cmd) ([]byte, error) {
 		return cmd.Type(command)
 	case common.Exists:
 		return cmd.Exists(command)
+	case common.TTL:
+		return cmd.TTL(command)
+	case common.PTTL:
+		return cmd.PTTL(command)
 	}
 	return []byte("-unsupported command\r\n"), UnsupportedCommand
 }

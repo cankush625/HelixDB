@@ -18,3 +18,5 @@
 | [CONFIG](./config.md)        | Read and modify server configuration          |
 | [TYPE](./type.md)            | Return the type of the value stored at a key  |
 | [EXISTS](./exists.md)        | Check if one or more keys exist               |
+| [TTL](./ttl.md)              | Get remaining TTL of a key in seconds         |
+| [PTTL](./pttl.md)            | Get remaining TTL of a key in milliseconds    |

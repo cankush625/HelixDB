@@ -15,6 +15,8 @@ const Keys = "KEYS"
 const Config = "CONFIG"
 const Type = "TYPE"
 const Exists = "EXISTS"
+const TTL = "TTL"
+const PTTL = "PTTL"
 
 // Command Args
 // Expiration Args
