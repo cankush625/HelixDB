@@ -14,6 +14,7 @@ const Del = "DEL"
 const Keys = "KEYS"
 const Config = "CONFIG"
 const Type = "TYPE"
+const Exists = "EXISTS"
 
 // Command Args
 // Expiration Args
