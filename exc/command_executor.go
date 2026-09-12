@@ -22,6 +22,8 @@ func ExecuteCommand(command common.Cmd) ([]byte, error) {
 		return cmd.Set(command)
 	case common.Expire:
 		return cmd.Expire(command)
+	case common.Persist:
+		return cmd.Persist(command)
 	case common.Del:
 		return cmd.Del(command)
 	case common.Keys:

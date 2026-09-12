@@ -29,3 +29,4 @@ See the [Usage Guide](./docs/usage.md) for installation, connecting, and a walkt
 | [EXISTS](./docs/exists.md)           | Check if one or more keys exist               |
 | [TTL](./docs/ttl.md)                 | Get remaining TTL of a key in seconds         |
 | [PTTL](./docs/pttl.md)              | Get remaining TTL of a key in milliseconds    |
+| [PERSIST](./docs/persist.md)         | Remove the TTL from a key so it never expires |
