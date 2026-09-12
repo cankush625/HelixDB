@@ -20,3 +20,4 @@
 | [EXISTS](./exists.md)        | Check if one or more keys exist               |
 | [TTL](./ttl.md)              | Get remaining TTL of a key in seconds         |
 | [PTTL](./pttl.md)            | Get remaining TTL of a key in milliseconds    |
+| [PERSIST](./persist.md)      | Remove the TTL from a key so it never expires |
